@@ -1,6 +1,5 @@
 package com.caps.jsp;
 
-
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,12 +9,9 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.Scanner;
 
-import com.mysql.jdbc.Driver; //required for jdbc to connect to mySql database
+import com.mysql.jdbc.Driver;
 
-
-public class MyFirstJDBCProgram {
-
-
+public class StatementExample {
 	public static void main(String[] args) {
 		Connection con = null;
 		Statement stmt = null;
@@ -34,13 +30,6 @@ public class MyFirstJDBCProgram {
 //						String dbUrl="jdbc:mysql://localhost:3306/capsV3_db"
 //								+ "?user=root&password=root";
 			String dbUrl="jdbc:mysql://localhost:3306/capsV3_db";
-//			con = DriverManager.getConnection(dbUrl); //1st version of getConnection
-
-			//2nd Version of getConnection
-//			Scanner in = new Scanner(System.in);
-//			String user = in.nextLine();
-//			String password = in.nextLine();
-//			con = DriverManager.getConnection(dbUrl, user, password);
 			
 			//3rd Way to get a DB Connection
 			String filePath = "F:/Files/db.properties";
@@ -54,26 +43,14 @@ public class MyFirstJDBCProgram {
 			System.out.println("Connected...");
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			/*
 			 * 3. Issue the SQL query via connection
 			 */
-			String sql = "select * from students_info";
+//			int val = 0;
+//			System.out.println("Enter a regno: ");
+//			Scanner in = new Scanner(System.in);
+//			val = Integer.parseInt(in.nextLine());
+			String sql = "select * from students_info where sid = 3";//+ val;
 
 			int count = 0;
 			stmt = con.createStatement();
@@ -130,4 +107,4 @@ public class MyFirstJDBCProgram {
 		}
 	}//end of main
 
-}//End of Class
+}

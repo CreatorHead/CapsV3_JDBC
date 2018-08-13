@@ -1,24 +1,20 @@
 package com.caps.jsp;
 
-
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 import java.util.Scanner;
 
-import com.mysql.jdbc.Driver; //required for jdbc to connect to mySql database
+import com.mysql.jdbc.Driver;
 
-
-public class MyFirstJDBCProgram {
-
-
+public class PreparedStatementExample {
 	public static void main(String[] args) {
 		Connection con = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			/*
@@ -34,13 +30,6 @@ public class MyFirstJDBCProgram {
 //						String dbUrl="jdbc:mysql://localhost:3306/capsV3_db"
 //								+ "?user=root&password=root";
 			String dbUrl="jdbc:mysql://localhost:3306/capsV3_db";
-//			con = DriverManager.getConnection(dbUrl); //1st version of getConnection
-
-			//2nd Version of getConnection
-//			Scanner in = new Scanner(System.in);
-//			String user = in.nextLine();
-//			String password = in.nextLine();
-//			con = DriverManager.getConnection(dbUrl, user, password);
 			
 			//3rd Way to get a DB Connection
 			String filePath = "F:/Files/db.properties";
@@ -54,30 +43,19 @@ public class MyFirstJDBCProgram {
 			System.out.println("Connected...");
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			/*
 			 * 3. Issue the SQL query via connection
 			 */
-			String sql = "select * from students_info";
-
+			String sql = "select * from students_info where sid=?";
+			System.out.println("Enter a regno: ");
+			Scanner in = new Scanner(System.in);
+			int sid = Integer.parseInt(in.nextLine());
+			
 			int count = 0;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1,sid);
+			
+			rs = pstmt.executeQuery();
 
 			/*
 			 * 4. Process the results
@@ -112,9 +90,9 @@ public class MyFirstJDBCProgram {
 					e.printStackTrace();
 				}
 			}
-			if(stmt != null){
+			if(pstmt != null){
 				try {
-					stmt.close();
+					pstmt.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -130,4 +108,4 @@ public class MyFirstJDBCProgram {
 		}
 	}//end of main
 
-}//End of Class
+}
