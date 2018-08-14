@@ -1,24 +1,34 @@
 package com.caps.jsp;
 
-
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 import java.util.Scanner;
 
-import com.mysql.jdbc.Driver; //required for jdbc to connect to mySql database
+import com.mysql.jdbc.Driver;
 
-
-public class MyFirstJDBCProgram {
-
-
+public class UpdatePassword {
 	public static void main(String[] args) {
+		
+		System.out.println("Enter a New Password: ");
+		Scanner in = new Scanner(System.in);
+		String newPasswd1 = in.nextLine();
+		System.out.println("Enter a New Password Again: ");
+		String newPasswd2 = in.nextLine();
+		System.out.println("Enter the regno: ");
+		int sid = Integer.parseInt(in.nextLine());
+		System.out.println("Enter the old Password: ");
+		String oldPasswd = in.nextLine();
+		
+		if(!newPasswd1.equals(newPasswd2))
+			throw new PasswordNotMatch();
+		
 		Connection con = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			/*
@@ -31,16 +41,7 @@ public class MyFirstJDBCProgram {
 			/*
 			 * 2. Get the DB Connection via Driver
 			 */
-//						String dbUrl="jdbc:mysql://localhost:3306/capsV3_db"
-//								+ "?user=root&password=root";
 			String dbUrl="jdbc:mysql://localhost:3306/capsV3_db";
-//			con = DriverManager.getConnection(dbUrl); //1st version of getConnection
-
-			//2nd Version of getConnection
-//			Scanner in = new Scanner(System.in);
-//			String user = in.nextLine();
-//			String password = in.nextLine();
-//			con = DriverManager.getConnection(dbUrl, user, password);
 			
 			//3rd Way to get a DB Connection
 			String filePath = "F:/Files/db.properties";
@@ -54,50 +55,29 @@ public class MyFirstJDBCProgram {
 			System.out.println("Connected...");
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			/*
 			 * 3. Issue the SQL query via connection
 			 */
-			String sql = "select * from students_info";
-
+			String sql = "update students_info set password=? where sid=? "
+					+ " and password=?";
+			
 			int count = 0;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, newPasswd1);
+			pstmt.setInt(2,sid);
+			pstmt.setString(3, oldPasswd);
+			
+			count = pstmt.executeUpdate();
 
 			/*
 			 * 4. Process the results
 			 */
 
-			while(rs.next()){
-				int regno = rs.getInt(1);
-				String firstname = rs.getString(2);
-				String lastname = rs.getString(3);
-				String isAdmin = rs.getString(4);
-				String passwd = rs.getString(5);
-
-				System.out.println(regno);
-				System.out.println(firstname);
-				System.out.println(lastname);
-				System.out.println(isAdmin);
-				System.out.println(passwd);
-				System.out.println("*********************");
+			if(count > 0) {
+				System.out.println("Password Updated...");
+			}else {
+				System.out.println("Password Updation Failed");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{
@@ -112,9 +92,9 @@ public class MyFirstJDBCProgram {
 					e.printStackTrace();
 				}
 			}
-			if(stmt != null){
+			if(pstmt != null){
 				try {
-					stmt.close();
+					pstmt.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -130,4 +110,4 @@ public class MyFirstJDBCProgram {
 		}
 	}//end of main
 
-}//End of Class
+}
